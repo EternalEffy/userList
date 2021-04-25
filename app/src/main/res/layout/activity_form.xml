@@ -12,14 +12,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/userName"
         android:inputType="text"
-        android:hint="user name"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/smile"
-        android:hint="smile"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
     <EditText
@@ -27,7 +25,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/exp"
         android:inputType="number"
-        android:hint="user exp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
     <EditText
@@ -35,7 +32,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/messageCount"
         android:inputType="number"
-        android:hint="message count"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 
@@ -48,7 +44,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="50dp"
         android:layout_marginRight="20dp"
-        android:text="add"
         android:backgroundTint="#4682B4"
         android:textColor="@color/white"/>
 
@@ -60,7 +55,6 @@
         android:layout_gravity="bottom"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:text="back"
         android:backgroundTint="#4682B4"
         android:textColor="@color/white"/>
 

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
-    private Button add,remove;
+    private Button add,remove,language;
     private TextView message;
     private ListView userList;
     private ArrayList<String> users = new ArrayList<>();
@@ -26,6 +26,8 @@ public class MainActivity extends Activity {
     private Cursor cursor;
     private String user;
     private int idUser=0;
+    private Languages lang;
+    private int l = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,11 +35,15 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         initRes();
         loadDb();
+        lang.setLanguages();
+        setLanguage(l);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this,Form.class));
+                Intent form = new Intent(MainActivity.this,Form.class);
+                form.putExtra("language",l);
+                startActivity(form);
             }
         });
 
@@ -46,9 +52,15 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 if(idUser>0) {
                     usersDb.delete(DBHelper.TABLE_USERS, DBHelper.KEY_ID + " = " + idUser, null);
-                    Toast.makeText(MainActivity.this, "user was deleted", Toast.LENGTH_SHORT).show();
+                    if(l % 2 == 0)
+                        Toast.makeText(MainActivity.this, "пользователь удалён", Toast.LENGTH_SHORT).show();
+                        else Toast.makeText(MainActivity.this, "user was deleted", Toast.LENGTH_SHORT).show();
                     recreate();
-                }else Toast.makeText(MainActivity.this, "pls select user for delete", Toast.LENGTH_SHORT).show();
+                }else
+                    if (l % 2 == 0)
+                        Toast.makeText(MainActivity.this, "пожалуйста выберете пользователя для удаления", Toast.LENGTH_SHORT).show();
+                    else
+                        Toast.makeText(MainActivity.this, "pls select user for delete", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -60,10 +72,20 @@ public class MainActivity extends Activity {
             }
         });
 
-        userList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_expandable_list_item_1,users));
+        language.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                l++;
+                setLanguage(l);
+            }
+        });
+
+        userList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,users));
     }
 
     private void initRes(){
+        lang = new Languages();
+        language = findViewById(R.id.lang);
         add = findViewById(R.id.add);
         remove = findViewById(R.id.remove);
         message = findViewById(R.id.message);
@@ -77,7 +99,7 @@ public class MainActivity extends Activity {
         if(cursor.moveToFirst()){
             do {
                 user = cursor.getInt(cursor.getColumnIndex(DBHelper.KEY_ID)) + ". " + cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME)) + " " +
-                        cursor.getString(cursor.getColumnIndex(DBHelper.KEY_SMILE)) + " exp: " + cursor.getString(cursor.getColumnIndex(DBHelper.KEY_EXP)) + " message count: " +
+                        cursor.getString(cursor.getColumnIndex(DBHelper.KEY_SMILE)) + "\nexp: " + cursor.getString(cursor.getColumnIndex(DBHelper.KEY_EXP)) + "\nmessage count: " +
                         cursor.getString(cursor.getColumnIndex(DBHelper.KEY_COUNT)) + " ";
                 users.add(user);
             }while (cursor.moveToNext());
@@ -85,12 +107,33 @@ public class MainActivity extends Activity {
             Log.d("@@@@","0 rows");
     }
 
+    private void setLanguage(int l){
+        switch (l%2){
+            case 0:
+                language.setText(lang.languages[0][0][3]);
+                add.setText(lang.languages[0][0][1]);
+                remove.setText(lang.languages[0][0][2]);
+                if (users.size() > 0) {
+                    message.setText(lang.languages[0][0][0]);
+                } else {
+                    message.setText(lang.languages[0][1][5]);
+                }
+                break;
+            case 1:
+                language.setText(lang.languages[1][0][3]);
+                add.setText(lang.languages[1][0][1]);
+                remove.setText(lang.languages[1][0][2]);
+                if (users.size() > 0) {
+                    message.setText(lang.languages[1][0][0]);
+                } else {
+                    message.setText(lang.languages[1][1][5]);
+                }
+        }
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        if(users.size()>0) {
-            message.setText("Saved users");
-        }else message.setText("Nothing to show. Please add users");
     }
 
     @Override

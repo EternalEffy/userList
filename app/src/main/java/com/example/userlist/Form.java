@@ -23,12 +23,19 @@ public class Form extends Activity {
     private DBHelper dbHelper;
     private SQLiteDatabase usersDb;
     private ContentValues contentValues;
+    private int l;
+    private Bundle arguments;
+    private Languages lang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form);
+        arguments = getIntent().getExtras();
+        l = (int) arguments.get("language");
         initRes();
+        lang.setLanguages();
+        setLanguage(l);
 
         add.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +47,10 @@ public class Form extends Activity {
                 contentValues.put(DBHelper.KEY_COUNT,user.getMessageCount());
 
                 usersDb.insert(DBHelper.TABLE_USERS,null,contentValues);
-                Toast.makeText(Form.this,"user was added",Toast.LENGTH_SHORT).show();
+                if ( l % 2 == 0)
+                    Toast.makeText(Form.this,"пользователь добавлен",Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(Form.this,"user was added",Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -53,7 +63,28 @@ public class Form extends Activity {
         });
     }
 
+    private void setLanguage(int l) {
+        switch (l%2){
+            case 0:
+                add.setText(lang.languages[0][0][1]);
+                back.setText(lang.languages[0][1][4]);
+                name.setHint(lang.languages[0][1][0]);
+                smile.setHint(lang.languages[0][1][1]);
+                exp.setHint(lang.languages[0][1][2]);
+                messageCount.setHint(lang.languages[0][1][3]);
+                break;
+            case 1:
+                add.setText(lang.languages[1][0][1]);
+                back.setText(lang.languages[1][1][4]);
+                name.setHint(lang.languages[1][1][0]);
+                smile.setHint(lang.languages[1][1][1]);
+                exp.setHint(lang.languages[1][1][2]);
+                messageCount.setHint(lang.languages[1][1][3]);
+        }
+    }
+
     private void initRes(){
+        lang = new Languages();
         add = findViewById(R.id.add_form);
         back = findViewById(R.id.back);
         name = findViewById(R.id.userName);
